@@ -10,8 +10,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "autoprefixer": "^9.4.2",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "eslint": "^5.10.0",
     "i": "^0.3.6",
     "js-cookie": "^2.2.0",
     "marked": "^0.5.0",

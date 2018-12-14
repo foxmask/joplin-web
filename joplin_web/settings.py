@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'joplin_web',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -251,3 +252,10 @@ if DEBUG:
         'debug_toolbar.panels.logging.LoggingPanel',
         'debug_toolbar.panels.redirects.RedirectsPanel',
     ]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'bundles/',
+            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
+        }
+}

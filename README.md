@@ -22,7 +22,7 @@ cd joplin-web
 source bin/activate
 git clone https://github.com/foxmask/joplin-web
 cd joplin-web
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ### settings 
@@ -52,6 +52,8 @@ this will add the tables of django but will not change any joplin tables
 python manage.py runserver localhost:8001 &
 ```
 if you map another port, you will need to have a look at the front end `vue.config.js` file
+
+Now proceed with setting up the frontend.
 
 # Joplin-front : The Frontend
 
