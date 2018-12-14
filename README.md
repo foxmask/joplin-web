@@ -44,7 +44,7 @@ If you plan to use joplin-terminal and not the WebClipper, in your `.env` file, 
 python manage.py migrate
 ```
 
-this will add the tables of django but will not change any joplin tables
+this will add the tables of django but will not change any joplin databases.
 
 ### Running
 
