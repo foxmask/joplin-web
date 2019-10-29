@@ -3,49 +3,58 @@
     <h5 v-html="this.title"></h5>
     <b-tabs>
       <b-tab title="notes" active>
-        <b-list-group>
-          <a v-for="note in this.getNotes" :key="note.id" href="#" @click="editNote(note)">
-            <b-card :title="note.title" v-if="note.is_todo === 0">
-              <tag :parent_folder="Object.assign({}, note.tags)"/>
-              <p class="card-text">
-                <small class="text-muted">created: {{ moment(note.user_created_time).format('lll') }}</small>
-              </p>
-            </b-card>
-          </a>
-        </b-list-group>
+        <div class="overflow-auto">
+            <b-table
+              id="my-notes"
+              :items="notes"
+              :per-page="perPage"
+              :current-page="currentPage"
+              :fields='fields'
+              small
+            >
+              <template v-slot:cell(title)="data">
+                <a href="#" @click="editNote(data.item)">{{ data.item.title }}</a>
+                <tag :parent_folder="Object.assign({}, data.item.tag)"/>
+              </template>
+            </b-table>
+            <b-pagination
+              v-model="currentPage"
+              :total-rows="notes.length"
+              :per-page="perPage"
+              aria-controls="my-notes"
+            ></b-pagination>
+          </div>
       </b-tab>
       <b-tab title="tasks">
-        <b-list-group>
-          <a v-for="note in this.getNotes" :key="note.id" href="#" @click="editNote(note)">
-            <b-card :title="note.title" v-if="note.is_todo === 1 && note.todo_completed === 0" border-variant="warning">
-              <p class="card-text" border-variant="light">
-                  <small class="text-muted">created: {{ moment(note.user_created_time).format('lll') }}</small>
-                  <small v-if="note.todo_due > 0" class="text-muted"> due: {{ moment(note.todo_due).format('lll') }}</small>
-                  <small v-if="note.todo_completed > 0" class="text-muted"> done: {{ moment(note.todo_completed).format('lll') }}</small>
-              </p>
-            </b-card>
-            <b-card :title="note.title" v-if="note.is_todo === 1 && note.todo_completed > 0" border-variant="success">
-              <p class="card-text" border-variant="light">
-                  <small class="text-muted">created: {{ moment(note.user_created_time).format('lll') }}</small>
-                  <small v-if="note.todo_due > 0" class="text-muted"> due: {{ moment(note.todo_due).format('lll') }}</small>
-                  <small v-if="note.todo_completed > 0" class="text-muted"> done: {{ moment(note.todo_completed).format('lll') }}</small>
-              </p>
-            </b-card>
-          </a>
-        </b-list-group>
+        <div class="overflow-auto">
+            <b-table
+              id="my-tasks"
+              :items="tasks"
+              :per-page="perPage"
+              :current-page="currentPage"
+              :fields='fields'
+              small
+            >
+              <template v-slot:cell(title)="data">
+                <a href="#" @click="editNote(data.item)">{{ data.item.title }}</a>
+                <tag :parent_folder="Object.assign({}, data.item.tags)"/>
+              </template>
+            </b-table>
+            <b-pagination
+              v-model="currentPage"
+              :total-rows="tasks.length"
+              :per-page="perPage"
+              aria-controls="my-tasks"
+            ></b-pagination>
+          </div>
       </b-tab>
     </b-tabs>
-    <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading">
-        <span slot="no-more">No more message</span>
-        <span slot="no-results">No results message</span>
-    </infinite-loading>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import InfiniteLoading from 'vue-infinite-loading'
 import { createNamespacedHelpers } from 'vuex'
+import { createHelpers } from 'vuex-map-fields'
 import getters from '../getters'
 import actions from '../actions'
 import types from '../types'
@@ -55,66 +64,30 @@ import Tag from './Tag'
 const namespace = 'notes'
 const { mapGetters, mapActions } = createNamespacedHelpers(namespace)
 
+const { mapFields } = createHelpers({
+  getterType: 'getNoteField',
+  mutationType: 'updateNoteField'
+})
+
 export default {
   data () {
     return {
-      page: 0
+      page: 0,
+      currentPage: 1,
+      perPage: 20,
+      fields: [
+        { key: 'title', label: 'Note', sortable: true }
+      ]
     }
   },
-  components: { InfiniteLoading, Tag },
+  components: { Tag },
   methods: {
-    infiniteHandler ($state) {
-      let path = '/api/jw/notes/'
-      let params = {}
-      let pageSize = 20
-      // params.notebook = this.$store.state.folders.folder.title
-
-      if ((this.$store.state.notes.notes.length / 20) > 0) {
-        this.page = Math.round(this.$store.state.notes.notes.length / 20) + 1
-      }
-      if (this.page > 0) {
-        params.page = this.page
-      }
-
-      // if (this.q !== '') {
-      //   params.q = this.q
-      //   params.page = this.page
-      // }
-
-      if (this.$store.state.folders.folder.id) {
-        path = '/api/jw/notes/folder/' + this.$store.state.folders.folder.id
-      }
-      axios.get(path, {
-        params: params
-      }).then((res) => {
-        if (res.data.length > 0) {
-          // concat the result from the backend with the store
-          let notes = this.$store.state.notes.notes.concat(res.data)
-          // update the store for the current folder
-          if (params.folder) {
-            this.$store.dispatch('notes/' + types.NOTE_FETCH_FOLDER, this.$store.state.folders.folder)
-          } else {
-            // update the store for all the notes and folder
-            this.$store.dispatch('notes/' + types.NOTE_FETCH_PAGE, notes)
-          }
-          $state.loaded()
-          if (notes.length / pageSize === 10) {
-            $state.complete()
-          }
-        } else {
-          $state.complete()
-        }
-      })
-    },
     editNote (note) {
       this.$store.dispatch('notes/' + types.NOTETAG_SET, note)
       this.$store.dispatch('notes/' + types.NOTE_SET, note)
     },
     delNote (id) {
       this.$store.dispatch('notes/' + types.NOTE_REMOVE, id)
-    },
-    searchNote () {
-      // @TODO
     },
     ...mapActions(Object.keys(actions))
   },
@@ -129,12 +102,29 @@ export default {
         }
         return 'All notes'
       }
-    }
+    },
+    /* only get notes that are not "tasks" */
+    notes () {
+      return this.$store.state.notes.notes.filter(note => note.is_todo === 0)
+    },
+    /* only get the tasks */
+    tasks () {
+      return this.$store.state.notes.notes.filter(note => note.is_todo === 1)
+    },
+    ...mapFields('notes', {
+      id: 'note.id',
+      is_todo: 'note.is_todo',
+      parent_id: 'note.parent_id',
+      created_time: 'note.user_created_time',
+      updated_time: 'note.updated_time',
+      todo_completed: 'note.todo_completed',
+      todo_due: 'note.todo_due',
+      author: 'note.author',
+      tag: 'tag'
+    })
   },
   mounted () {
-    this.$nextTick(() => {
-      this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
-    })
+    this.$store.dispatch('notes/' + types.NOTE_FETCH_ALL)
   }
 }
 </script>

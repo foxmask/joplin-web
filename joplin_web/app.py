@@ -136,7 +136,8 @@ async def get_notes(request):
     :return:
     """
     res = await joplin.get_notes()
-    payload = await paginator(request, res)
+    # payload = await paginator(request, res)
+    payload = res.json()
     return JSONResponse(payload)
 
 
@@ -159,7 +160,8 @@ async def get_notesbyfolder(request):
     """
     folder = request.path_params['folder']
     res = await joplin.get_folders_notes(folder)
-    payload = await paginator(request, res)
+    # payload = await paginator(request, res)
+    payload = res.json()
     return JSONResponse(payload)
 
 
