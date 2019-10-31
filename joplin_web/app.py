@@ -27,6 +27,21 @@ main_app.debug = settings('JW_DEBUG')
 joplin = JoplinApi(token=settings('JOPLIN_WEBCLIPPER_TOKEN'))
 
 
+async def tag_for_notes(data):
+    """
+    alter the original data to add the tag related to the note
+    :param data:
+    :return:
+    """
+    payload = []
+    for note in data.json():
+        tag = await joplin.get_notes_tags(note['id'])
+        new_note = note
+        new_note['tag'] = tag.json() if tag else ''
+        payload.append(new_note)
+    return payload
+
+
 async def paginator(request, res):
     """
     paginator to limit the flow of the data to render
@@ -136,8 +151,7 @@ async def get_notes(request):
     :return:
     """
     res = await joplin.get_notes()
-    # payload = await paginator(request, res)
-    payload = res.json()
+    payload = await tag_for_notes(res)
     return JSONResponse(payload)
 
 
@@ -161,7 +175,7 @@ async def get_notesbyfolder(request):
     folder = request.path_params['folder']
     res = await joplin.get_folders_notes(folder)
     # payload = await paginator(request, res)
-    payload = res.json()
+    payload = await tag_for_notes(res)
     return JSONResponse(payload)
 
 
@@ -173,7 +187,14 @@ async def get_notesbytag(request):
     """
     tag_id = request.path_params['tag_id']
     res = await joplin.get_tags_notes(tag_id)
-    return JSONResponse(res.json())
+    payload = []
+    for note in res.json():
+        tag = await joplin.get_notes_tags(note['id'])
+        new_note = note
+        new_note['tag'] = tag.json() if tag else ''
+        payload.append(new_note)
+    # return JSONResponse(res.json())
+    return JSONResponse(payload)
 
 
 async def get_note(request):

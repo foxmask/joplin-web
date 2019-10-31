@@ -12,7 +12,7 @@
               :fields='fields'
               small
             >
-              <template v-slot:cell(title)="data">
+              &nbsp;<template v-slot:cell(title)="data">
                 <a href="#" @click="editNote(data.item)">{{ data.item.title }}</a>
                 <tag :parent_folder="Object.assign({}, data.item.tag)"/>
               </template>
@@ -31,13 +31,13 @@
               id="my-tasks"
               :items="tasks"
               :per-page="perPage"
-              :current-page="currentPage"
+              :current-page="currentPageTasks"
               :fields='fields'
               small
             >
-              <template v-slot:cell(title)="data">
+              &nbsp;<template v-slot:cell(title)="data">
                 <a href="#" @click="editNote(data.item)">{{ data.item.title }}</a>
-                <tag :parent_folder="Object.assign({}, data.item.tags)"/>
+                <tag :parent_folder="Object.assign({}, data.item.tag)"/>
               </template>
             </b-table>
             <b-pagination
@@ -74,6 +74,7 @@ export default {
     return {
       page: 0,
       currentPage: 1,
+      currentPageTasks: 1,
       perPage: 20,
       fields: [
         { key: 'title', label: 'Note', sortable: true }
