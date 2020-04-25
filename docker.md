@@ -4,7 +4,21 @@ if you prefer to run the project from docker follow that steps:
 
 ## before building 
 
-Do not forget to setup the parms in the `.env` file describes in the `settings` paragraph of the [README.md](README.md#settings)
+### set the environment
+`cp joplin_web/env.docker.sample .env`
+Copy the example env and do not forget to setup the parms in the `.env` file describes in the `settings` paragraph of the [README.md](README.md#settings). At least the joplin webclipper token needs to be set.
+
+### get the joplin config directory
+
+Configure your joplin app like you want it. Afterwards copy your joplin config directory to the directory where you want to mount the docker volume.
+
+`cp -r /home/foxmask/.config/joplin-desktop /data/`
+
+### define the URL to joplin web
+
+Think about the full URL where you want your joplin web app to be accessible. If you want to access it at the default URL `http://127.0.0.1:8001/` no separate definition is needed.
+
+If you want to change the URL, it is important that your URL ends with a slash.
 
 ## build the docker image by
 
@@ -14,21 +28,14 @@ docker build -t joplin-web-build .
 
 ## run the image
 ```
-docker run --network="host" -p 8001:8001 -v JOPLIN_RESOURCES:/path/to/.config/joplin-desktop/resources joplin-web-build
-
-docker run --network="host" -p 8001:8001 -v JOPLIN_RESOURCES:/home/foxmask/.config/joplin-desktop/resources joplin-web-build
-WARNING: Published ports are discarded when using host network mode
-Joplin Web - Starlette powered
-2019-08-22 17:43:39,659 - INFO - Started server process [1]
-2019-08-22 17:43:39,659 - INFO - Waiting for application startup.
-2019-08-22 17:43:39,661 - INFO - Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-2019-08-22 17:43:49,374 - INFO - ('127.0.0.1', 50996) - "GET / HTTP/1.1" 200
-2019-08-22 17:43:49,458 - INFO - ('127.0.0.1', 50996) - "GET /static/css/chunk-vendors.css HTTP/1.1" 200
-2019-08-22 17:43:49,464 - INFO - ('127.0.0.1', 50998) - "GET /static/js/chunk-vendors.js HTTP/1.1" 200
-2019-08-22 17:43:49,465 - INFO - ('127.0.0.1', 51000) - "GET /static/js/app.js HTTP/1.1" 200
-2019-08-22 17:43:50,408 - INFO - ('127.0.0.1', 51026) - "GET /favicon.ico HTTP/1.1" 404
-2019-08-22 17:43:50,648 - INFO - ('127.0.0.1', 50996) - "GET /api/jw/tags/ HTTP/1.1" 200
-2019-08-22 17:43:51,230 - INFO - ('127.0.0.1', 51000) - "GET /api/jw/notes/ HTTP/1.1" 200
-2019-08-22 17:43:51,666 - INFO - ('127.0.0.1', 50998) - "GET /api/jw/folders/ HTTP/1.1" 200
-
+docker run -p 8001:8001 -v /data/joplin-desktop:/data -e JW_FULL_URL="http://192.168.0.3:8001/" joplin-web-build
+joplin-web available at http://192.168.0.3:8001/
+/
+Joplin Web Companion - Starlette powered
+INFO:     Started server process [8]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+23:44:39
+INFO:     192.168.0.2:33462 - "GET / HTTP/1.1" 200 OK
 ```
