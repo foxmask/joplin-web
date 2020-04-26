@@ -6,14 +6,15 @@ if you prefer to run the project from docker follow that steps:
 
 ### get the joplin config directory
 
-Configure your joplin app like you want it. Connect to your joplin app with the webclipper and save the token for later. Afterwards copy your joplin config directory to the directory where you want to mount the docker volume.
+Configure your joplin app like you want it. Activate the joplin webclipper service and save the authorization token for later. Afterwards copy your joplin config directory to the directory where you want to mount the docker volume.
 
 `cp -r /home/foxmask/.config/joplin-desktop /data/`
 
 ### set the environment
 
 `cp joplin_web/env.docker.sample .env`
-Copy the example env and do not forget to setup the parms in the `.env` file describes in the `settings` paragraph of the [README.md](README.md#settings). At least the joplin webclipper token needs to be set.
+
+Copy the example env and do not forget to setup the parameters in the `.env` file, which is described in the `settings` paragraph of the [README.md](README.md#settings). At least the joplin webclipper token needs to be set.
 
 ### define the URL to joplin web
 
