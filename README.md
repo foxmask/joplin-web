@@ -19,7 +19,7 @@ Because it may happened we need to access to [JoplinApp](https://joplinapp.org) 
 ## Installation
 
 ```python
-export JW_BASE=${HOME} # Set the directory where you'd like to install
+export JW_BASE="${HOME}" # Set the directory where you would like to install
 cd "${JW_BASE}"
 python3 -m venv joplin-web
 cd joplin-web
@@ -68,7 +68,7 @@ we start the front and the back in 2 dedicated process
 * start the backend part of joplin-web app like this
 
 ```python
-export JW_BASE=${HOME} # Must match value used at install time
+export JW_BASE="${HOME}" # Must match value used at install time
 cd "${JW_BASE}/joplin-web/joplin-web/joplin_web"
 source "../../bin/activate"
 python app.py &
@@ -95,7 +95,7 @@ npm run build
 * then start the application:
 
 ```python
-export JW_BASE=${HOME} # Must match value used at install time
+export JW_BASE="${HOME}" # Must match value used at install time
 cd "${JW_BASE}/joplin-web/joplin-web/joplin_web"
 source "../../bin/activate"
 python app.py &
