@@ -25,7 +25,7 @@ source bin/activate
 git clone https://github.com/foxmask/joplin-web
 cd joplin-web
 pip install -r requirements.txt
-cd ../joplin-vue
+cd joplin-vue
 npm install
 ```
 
