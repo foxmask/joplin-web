@@ -1,7 +1,8 @@
 FROM python:3.8-buster
 SHELL ["/bin/bash", "-c"]
 ENV PYTHONUNBUFFERED=1 \
-    JW_FULL_URL="http://127.0.0.1:8001/"
+    JW_FULL_URL="http://127.0.0.1:8001/" \
+    JW_SYNC_SECONDS=300
 WORKDIR /app
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && apt-get install -y libsecret-1-dev nodejs \
