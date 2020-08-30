@@ -1,20 +1,22 @@
 # Joplin Web
+[TOC] 
 
 A Web application companion for [JoplinApp](https://joplinapp.org)
 
 ![Joplin web](https://raw.githubusercontent.com/foxmask/joplin-web/master/joplin_web.png)
 
-## why that project ?
+## Why did we make this project?
 
-Because it may happened we need to access to [JoplinApp](https://joplinapp.org) without having access to our smartphone or the Joplin Desktop, and a Web Application could to the trick at a given moment.
+We needed to access to [JoplinApp](https://joplinapp.org) without having access to our smartphone or the Joplin Desktop, and so we built a Web version that could give us access from wherever
 
 ## Requirements
 
 * Python >= 3.6
 * [joplin-api](https://github.com/foxmask/joplin-api)
-* [starlette](https://www.starlette.io)
+* [starlette](https://www.starlette.io) (installed as part of Python resources)
 * [VueJS](https://vuejs.org)
 
+---
 
 ## Installation
 
@@ -31,25 +33,27 @@ cd joplin-vue
 npm install
 ```
 
-### settings
+### Set Environment Parameters
+In `${JW_BASE}/joplin-web/joplin-web/joplin-web`, copy `env.sample` to `.env`:
 
-copy env.sample to .env
+Required parameters:
+* `JOPLIN_WEBCLIPPER_TOKEN`: From the Joplin Desktop app, go to Settings > Web Clipper to enable Web Clipper and find your token
+* `JOPLIN_RESOURCES`: The resources in Joplin Web are from the Desktop app resource directory
+* `JW_BASE_URL`: If you want to install Joplin Web in a subdirectory, you can update the base. For example, set it to `/joplin/` to move the URL from `/` to  `/joplin/`
 
-then set at least this parm:
+Optional paramenters:
+* `JW_DEBUG`: You can choose to run the app in debug mode or not
+* `JW_PAGINATOR`: Choose the number of notes per page
+* `JW_HTTP_PORT`: Set the port number to view the app. For example localhost:8001
 
-* the `JOPLIN_WEBCLIPPER_TOKEN` you have in the Webclipper config page in Joplin
-* the `JOPLIN_RESOURCES` to find the files of joplin and being able to load them in the editori
-* the `JW_BASE_URL` to set the base of the application eg  set it to `/joplin/` to move the URL from `/` to  `/joplin/`
+### Start a version of Joplin
+In order to use the Joplin Web app, you will need to have a version of Joplin running. 
 
-the config file is commented to be able to help you to fill the parameters, like `HTTP_PORT`, `PAGINATOR` or `DEBUG`
+*Option 1:* Joplin Desktop App
+* Launch the Joplin Desktop App as normal. Make sure Web Clipper is running, so that the API is available. 
 
-
-### Running
-
-to be able to manage the joplin notes from the web app, we need to start:
-
-* if you are on your workstation just start "Joplin Desktop"
-* if you are using joplin on a dedicated server, you can start "joplin headless", as follow
+*Option 2:* Joplin Headless
+* If you are using joplin on a dedicated server, you can start "joplin headless", as follow
 ```
 joplin --profile ~/.config/joplin-desktop/ server start
 Server is already running on port 41184
@@ -61,11 +65,32 @@ sudo ln -s ~/.joplin-bin/bin/joplin /usr/bin/joplin
 ```
 (have a look at https://joplinapp.org/ for more details)
 
-#### for developement purpose
+### Run the App for Normal Use
+1. Compile the vuejs project
+```shell
+cd joplin-vue
+npm run build
+```
 
-we start the front and the back in 2 dedicated process
+2. Start the application
+```python
+export JW_BASE="${HOME}" # Must match value used at install time
+cd "${JW_BASE}/joplin-web/joplin-web/joplin_web"
+source "../../bin/activate"
+python app.py &
+Joplin Web - Starlette powered
+Started server process [11243]
+Waiting for application startup.
+Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+```
 
-* start the backend part of joplin-web app like this
+---
+
+## Starting App for Development
+
+Start the front and the back end in 2 dedicated process
+
+1. Start the backend
 
 ```python
 export JW_BASE="${HOME}" # Must match value used at install time
@@ -78,37 +103,16 @@ Waiting for application startup.
 Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
 ```
 
-* start the frontend
+2. Start the frontend
 
 see [`joplin-web/joplin-vue/README.md`](joplin-vue/README.md) file
 
-
-#### for production purpose
-
-* compile the vuejs project first,
-
-```shell
-cd joplin-vue
-npm run build
-```
-
-* then start the application:
-
-```python
-export JW_BASE="${HOME}" # Must match value used at install time
-cd "${JW_BASE}/joplin-web/joplin-web/joplin_web"
-source "../../bin/activate"
-python app.py &
-Joplin Web - Starlette powered
-Started server process [11243]
-Waiting for application startup.
-Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-```
+---
 
 
 # Joplin-web : Docker
 
-if you prefer to run the project from docker :
+if you prefer to run the project from docker:
 
 see [joplin-web/docker.md](docker.md) for details
 
