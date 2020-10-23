@@ -4,6 +4,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python /app/app.py
+    image: joplinweb:latest
+    container_name: joplinweb
     ports:
       - "8001:8001"
+    volumes:
+      - /docker/host/path/to/joplin/profile:/data
+    environment:
+      - JW_DEBUG=False
+      - JW_PAGINATOR=20
+      - JW_BASE_URL=/
+      - JW_FULL_URL=/
+      - JW_HTTP_PORT=8001
+      - JW_SYNC_SECONDS=300
+      - JOPLIN_RESOURCES=/data/resources
+      - JOPLIN_WEBCLIPPER_TOKEN=paste_your_webclipper_authorization_token_from_desktop_joplin_client_here
+    restart: "unless-stopped"
+ 
+ # To build the image:
+   # touch .env_docker # The file may and should be empty
+   # docker-compose build --no-cache --pull --force-rm
+ # To start the container:
+   # docker-compose up -d
