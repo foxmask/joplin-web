@@ -1,3 +1,3 @@
 # Joplin Web
 
-project has been moved to https://gitlab.com/annyong/joplin-web
+use https://github.com/foxmask/joplin-web/tree/vuejs and not master
