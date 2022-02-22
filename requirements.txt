@@ -1,5 +1,5 @@
 arrow==0.17.0
-Django==3.1.2
+Django==3.1.14
 django-environ==0.4.5
 joplin-api==1.6.0
 rich==9.0.0
